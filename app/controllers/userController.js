@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body
+    const { email, senha } = req.body
 
     const user = await knex('administrator').where('email', email)
 
@@ -13,11 +13,11 @@ exports.login = async (req, res, next) => {
 
       if (user.length < 1) {
         return res.status(401).send({
-          message: 'Falha na autenticação',
+          message: 'Falha na autenticação member',
         })
       }
 
-      bcrypt.compare(password, user[0].senha, (err, result) => {
+      bcrypt.compare(senha, user[0].senha, (err, result) => {
         if (err) {
           return res.status(401).send({
             message: 'Falha na autenticação',
@@ -47,10 +47,10 @@ exports.login = async (req, res, next) => {
         }
       })
     } else {
-      bcrypt.compare(password, user[0].senha, (err, result) => {
+      bcrypt.compare(senha, user[0].senha, (err, result) => {
         if (err) {
           return res.status(401).send({
-            message: 'Falha na autenticação',
+            message: 'Falha na autenticação admin',
           })
         }
 
