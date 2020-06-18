@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+            width: 100%;
+            min-width: 400px;
+            text-align: center;
+            font: Muli;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background: white;
+        }
+
+        thead tr {
+            text-align: center;
+            font-weight: bold;
+            background: #000051;
+            color: white;
+        }
+
+        table tr:first-child,
+        th:first-child {
+            border-top-left-radius: 7px;
+        }
+
+        table tr:first-child,
+        th:last-child {
+            border-top-right-radius: 7px;
+        }
+
+        table th,
+        table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #c5c5c5;
+        }
+
+        table tbody tr:last-of-type {
+            border-bottom: 2px solid #06234e;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% for(var user of admins){%>
+            <tr>
+                <td><%=user.nome%></td>
+                <td><%=user.email%></td>
+            </tr> <%}%>
+          </tbody>
+        </table>
+</body>
+</html>
