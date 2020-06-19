@@ -2,76 +2,234 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    body,
+    html {
+      font-family: 'Muli', sans-serif;
+      margin: 0;
+      padding: 10px;
+    }
 
-    <style>
-        .container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      height: 100%;
+      margin: 10px auto;
+      display: flex;
+      flex-direction: column;
+    }
 
-        table {
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 0.9em;
-            width: 100%;
-            min-width: 400px;
-            text-align: center;
-            font: Muli;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            background: white;
-        }
+    .container-header {
+      display: flex;
+      flex-direction: column;
+    }
 
-        thead tr {
-            text-align: center;
-            font-weight: bold;
-            background: #000051;
-            color: white;
-        }
+    .container-header .project-title {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 7px;
+      border-bottom: 1px solid;
+      margin-bottom: 10px;
+    }
 
-        table tr:first-child,
-        th:first-child {
-            border-top-left-radius: 7px;
-        }
+    .container-header .project-title .title {
+      font-size: 24px;
+      font-weight: 600;
+    }
 
-        table tr:first-child,
-        th:last-child {
-            border-top-right-radius: 7px;
-        }
+    .container-header .project-info {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 4px;
+      border-bottom: 1px solid;
+    }
 
-        table th,
-        table td {
-            padding: 14px 18px;
-            border-bottom: 1px solid #c5c5c5;
-        }
+    .container-header .project-info .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+    }
 
-        table tbody tr:last-of-type {
-            border-bottom: 2px solid #06234e;
-        }
-    </style>
+    .container-header .project-info .row .row-start span {
+      text-align: justify;
+    }
+
+    .container-body .title {
+      font-size: 18px;
+      margin-top: 10px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .container-body .req-func {
+      margin-top: 20px;
+    }
+
+    .container-body .req-non-func {
+      border-bottom: 1px solid;
+      margin-top: 5px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.9em;
+      width: 100%;
+      min-width: 400px;
+      text-align: center;
+      font: Muli;
+      background: white;
+      display: table;
+      border: 1px solid #c7c7c7;
+      page-break-after: auto;
+      page-break-inside: avoid;
+    }
+
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+
+    td {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    tfoot {
+      display: table-footer-group;
+    }
+
+    thead tr {
+      text-align: center;
+      font-weight: bold;
+      background: #000051;
+      color: white;
+    }
+
+    table th,
+    table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #c5c5c5;
+      border: 1px solid #c5c5c5;
+    }
+
+    table tbody tr:last-of-type {
+      border-bottom: 2px solid #06234e;
+    }
+  </style>
 </head>
 
 <body>
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Email</th>
-            </tr>
-        </thead>
+  <div class="container">
+    <div class="container-header">
+      <div class="project-title">
+        <span class="title"><%= Project.Projeto %></span>
+        <span style="float: right;">
+          Data de emissão:
+          <span><%= DataAtual %></span>
+        </span>
+      </div>
+      <div class="project-info">
+        <div class="row">
+          <div class="row-start">
+            <strong>Responsável:</strong>
+            <span><%= Project.Responsável %></span>
+          </div>
+        </div>
 
-        <tbody>
-            <% for(var user of admins){%>
+        <div class="row">
+          <strong>
+            Data de criação:
+          </strong>
+          <span><%= creationDate %></span>
+        </div>
+
+        <div class="row">
+          <div class="row-start">
+            <strong>Descrição:</strong>
+            <span>
+              <%= Project.descricao %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-body">
+      <% for(var sub of Subsystems){%>
+      <div class="info-sub">
+        <div class="title">
+          Subsistema:
+          <span><%= sub.nome %></span>
+        </div>
+        <div class="desc">
+          <strong>Descrição:</strong>
+          <span>
+            <%= sub.descricaoSub %>
+          </span>
+        </div>
+      </div>
+      <div class="req-func">
+        - Requisitos Funcionais
+        <% if (sub.reqFunc.length > 0) { %>
+        <table>
+          <thead>
             <tr>
-                <td><%=user.nome%></td>
-                <td><%=user.email%></td>
-            </tr> <%}%>
-          </tbody>
-        </table>
-</body>
+              <th style="width: 70px;">ID</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% for(var reqfunctional of sub.reqFunc){%>
+            <tr>
+              <td><%= reqfunctional.indicador %></td>
+              <td><%= reqfunctional.descricao %></td>
+            </tr>
+            <%}%>
+            </tbody>
+          </table>
+          <%}%>
+      </div>
+
+
+      <div class="req-non-func">
+        - Requisitos Não Funcionais
+        <% if (sub.reqNonFunc.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70px;">ID</th>
+              <th style="width: 120px;">Tipo</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% for(var reqnonfunctional of sub.reqNonFunc){%>
+            <tr>
+              <td><%= reqnonfunctional.indicador %></td>
+              <td><%= reqnonfunctional.tipo %></td>
+              <td><%= reqnonfunctional.descricao %></td>
+            </tr>
+            <%}%>
+            </tbody>
+          </table>
+          <%}%>
+      </div>
+      <%}%>
+      </div>
+    </div>
+
+    <script>
+
+    </script>
+  </body>
 </html>
