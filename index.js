@@ -38,6 +38,6 @@ app.use((error, req, res, next) => {
   res.json({ error: error.message })
 })
 
-app.listen('8050', () => {
+app.listen(process.env.PORT || 3020, () => {
   console.log('Server running')
 })
