@@ -1,0 +1,5 @@
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASSWORD=mowah2020
+DB_DATABASE=riot-db
+DB_PORT=5432
