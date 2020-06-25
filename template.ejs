@@ -11,6 +11,7 @@
       font-family: 'Muli', sans-serif;
       margin: 0;
       padding: 10px;
+      font-size: 16px;;
     }
 
     .container {
@@ -37,7 +38,7 @@
     }
 
     .container-header .project-title .title {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 600;
     }
 
@@ -59,7 +60,7 @@
     }
 
     .container-body .title {
-      font-size: 18px;
+      font-size: 16px;
       margin-top: 10px;
       font-weight: 600;
       margin-bottom: 10px;
@@ -77,7 +78,7 @@
     table {
       border-collapse: collapse;
       margin: 20px 0;
-      font-size: 0.9em;
+      font-size: 16px;
       width: 100%;
       min-width: 400px;
       text-align: center;
@@ -116,7 +117,7 @@
 
     table th,
     table td {
-      padding: 14px 18px;
+      padding: 7px 10px;
       border-bottom: 1px solid #c5c5c5;
       border: 1px solid #c5c5c5;
     }
@@ -167,18 +168,18 @@
       <div class="info-sub">
         <div class="title">
           Subsistema:
-          <span><%= sub.nome %></span>
+          <span><%= sub[0].nome %></span>
         </div>
         <div class="desc">
           <strong>Descrição:</strong>
           <span>
-            <%= sub.descricaoSub %>
+            <%= sub[0].descricao %>
           </span>
         </div>
       </div>
       <div class="req-func">
         - Requisitos Funcionais
-        <% if (sub.reqFunc.length > 0) { %>
+        <% if (sub[0].reqFunc.length > 0) { %>
         <table>
           <thead>
             <tr>
@@ -188,7 +189,7 @@
           </thead>
 
           <tbody>
-            <% for(var reqfunctional of sub.reqFunc){%>
+            <% for(var reqfunctional of sub[0].reqFunc){%>
             <tr>
               <td><%= reqfunctional.indicador %></td>
               <td><%= reqfunctional.descricao %></td>
@@ -202,7 +203,7 @@
 
       <div class="req-non-func">
         - Requisitos Não Funcionais
-        <% if (sub.reqNonFunc.length > 0) { %>
+        <% if (sub[0].reqNonFunc.length > 0) { %>
         <table>
           <thead>
             <tr>
@@ -213,7 +214,7 @@
           </thead>
 
           <tbody>
-            <% for(var reqnonfunctional of sub.reqNonFunc){%>
+            <% for(var reqnonfunctional of sub[0].reqNonFunc){%>
             <tr>
               <td><%= reqnonfunctional.indicador %></td>
               <td><%= reqnonfunctional.tipo %></td>

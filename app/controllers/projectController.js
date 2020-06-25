@@ -81,59 +81,65 @@ exports.getPdf = async (req, res, next) => {
       )
       .select(knex.ref('administrator.nome').as('Responsável'))
       .first()
-    const subs = []
 
     const creationDate = formatDate(
       Project.created_at.toLocaleDateString(),
       'pt-br',
     )
 
-    await knex('subsystem')
-      .where('id_project', id_project)
-      .then((sub) => {
-        sub.map(async (sb) => {
-          const reqFunc = await knex('reqfunctional').where('id_sub', sb.id_sub)
-          const reqNonFunc = await knex('reqnonfunctional').where(
-            'id_sub',
-            sb.id_sub,
-          )
-          const nome = sb.nome
-          const descricaoSub = sb.descricao
-          subs.push({ nome, descricaoSub, reqFunc, reqNonFunc })
-        })
+    const subs = await knex('subsystem').where('id_project', id_project)
 
-        setTimeout(() => {
-          ejs.renderFile(
-            './template.ejs',
-            {
-              Project,
-              DataAtual: getDate(),
-              creationDate,
-              Subsystems: subs,
-            },
-            (err, html) => {
+    let subInfo = []
+
+    for (var subsystem of subs) {
+      const subname = subsystem.nome
+      const descricaoSub = subsystem.descricao
+      const reqFunc = await knex('reqfunctional').where(
+        'id_sub',
+        subsystem.id_sub,
+      )
+      const reqNonFunc = await knex('reqnonfunctional').where(
+        'id_sub',
+        subsystem.id_sub,
+      )
+
+      subInfo = [
+        ...subInfo,
+        [
+          {
+            nome: subname,
+            descricao: descricaoSub,
+            reqFunc: [...reqFunc],
+            reqNonFunc: [...reqNonFunc],
+          },
+        ],
+      ]
+    }
+
+    ejs.renderFile(
+      './template.ejs',
+      {
+        Project,
+        DataAtual: getDate(),
+        creationDate,
+        Subsystems: subInfo,
+      },
+      (err, html) => {
+        if (err) {
+          res.json({ message: 'Erro ejs' })
+        } else {
+          pdf
+            .create(html, {})
+            .toFile(`./app/temp/projeto_${id_project}.pdf`, (err, resp) => {
               if (err) {
-                res.json({ message: 'Erro ejs' })
+                res.json({ message: 'erro pdf' })
               } else {
-                pdf
-                  .create(html, {})
-                  .toFile(
-                    `./app/temp/projeto_${id_project}.pdf`,
-                    (err, resp) => {
-                      if (err) {
-                        res.json({ message: 'erro pdf' })
-                      } else {
-                        res.sendFile(
-                          path.resolve(`app/temp/projeto_${id_project}.pdf`),
-                        )
-                      }
-                    },
-                  )
+                res.sendFile(path.resolve(`app/temp/projeto_${id_project}.pdf`))
               }
-            },
-          )
-        }, 200)
-      })
+            })
+        }
+      },
+    )
   } catch (error) {
     next(error)
   }
