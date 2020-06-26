@@ -1,5 +1,6 @@
 const knex = require('../database')
 const pdf = require('html-pdf')
+const fs = require('fs')
 const ejs = require('ejs')
 const path = require('path')
 const { getDate, formatDate } = require('../utils/date')
@@ -116,6 +117,17 @@ exports.getPdf = async (req, res, next) => {
       ]
     }
 
+    const options = {
+      height: '11.25in',
+      width: '8.5in',
+      header: {
+        height: '10mm',
+      },
+      footer: {
+        height: '20mm',
+      },
+    }
+
     ejs.renderFile(
       './template.ejs',
       {
@@ -129,14 +141,24 @@ exports.getPdf = async (req, res, next) => {
           res.json({ message: 'Erro ejs' })
         } else {
           pdf
-            .create(html, {})
-            .toFile(`./app/temp/projeto_${id_project}.pdf`, (err, resp) => {
-              if (err) {
-                res.json({ message: 'erro pdf' })
-              } else {
-                res.sendFile(path.resolve(`app/temp/projeto_${id_project}.pdf`))
-              }
-            })
+            .create(html, options)
+            .toFile(
+              `./app/temp/projeto_${id_project}.pdf`,
+              async (err, resp) => {
+                if (err) {
+                  res.json({ message: 'erro pdf' })
+                } else {
+                  const filePath = path.resolve(
+                    __dirname,
+                    `../temp/projeto_${id_project}.pdf`,
+                  )
+                  await res.sendFile(filePath)
+                  setTimeout(() => {
+                    fs.unlinkSync(filePath)
+                  }, 3000)
+                }
+              },
+            )
         }
       },
     )
