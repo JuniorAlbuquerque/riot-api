@@ -3,11 +3,14 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const routes = require('./app/routes')
+const path = require('path')
 const cors = require('cors')
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+
+app.use('/public', express.static(path.resolve(__dirname, 'public')))
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -39,5 +42,5 @@ app.use((error, req, res, next) => {
 })
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log('Server running')
+  console.log(`Server running in port ${process.env.PORT || 3000}`)
 })

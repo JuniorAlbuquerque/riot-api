@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PDF</title>
+  <script src="js/chart.js"></script>
   <style>
     body,
     html {
@@ -128,8 +129,16 @@
   </style>
 </head>
 
-<body>
+<body onload="renderChart('<%= totalReqFunc %>', '<%= totalReqNonFunc %>')">
   <div class="container">
+    <div class="header" style="margin-bottom: 20px;">
+      <img style="width: 100px;" src="img/ufam.png" alt="">
+      <div class="ufam" style="position: absolute; top: 55px; left: 270px; text-align: center;">
+        <span>RIoThing</span> <br>
+        <span>Universidade Federal do Amazonas</span>
+      </div>
+
+    </div>
     <div class="container-header">
       <div class="project-title">
         <span class="title"><%= Project.Projeto %></span>
@@ -168,7 +177,7 @@
       <div class="info-sub">
         <div class="title">
           Subsistema:
-          <span style="font-size: 14px;"><%= sub[0].nome %></span>
+          <span><%= sub[0].nome %></span>
         </div>
         <div class="desc">
           <strong>Descrição:</strong>
@@ -227,10 +236,9 @@
       </div>
       <%}%>
       </div>
+      <canvas style="margin: 10px auto;" id="myChart" width="400" height="400"></canvas>
     </div>
 
-    <script>
-
-    </script>
+    <script src="js/renderChart.js"></script>
   </body>
 </html>

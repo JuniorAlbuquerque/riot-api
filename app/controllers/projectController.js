@@ -91,6 +91,8 @@ exports.getPdf = async (req, res, next) => {
     const subs = await knex('subsystem').where('id_project', id_project)
 
     let subInfo = []
+    let totalReqFunc = 0
+    let totalReqNonFunc = 0
 
     for (var subsystem of subs) {
       const subname = subsystem.nome
@@ -103,6 +105,9 @@ exports.getPdf = async (req, res, next) => {
         'id_sub',
         subsystem.id_sub,
       )
+
+      totalReqFunc = totalReqFunc + reqFunc.length
+      totalReqNonFunc = totalReqNonFunc + reqNonFunc.length
 
       subInfo = [
         ...subInfo,
@@ -118,14 +123,17 @@ exports.getPdf = async (req, res, next) => {
     }
 
     const options = {
-      height: '11.25in',
-      width: '8.5in',
+      paginationOffset: 1,
       header: {
-        height: '10mm',
+        height: '2mm',
       },
       footer: {
-        height: '20mm',
+        height: '5mm',
       },
+      base: 'http://localhost:3000/public/',
+      format: 'A4',
+      orientation: 'portrait',
+      quality: '75',
     }
 
     ejs.renderFile(
@@ -135,6 +143,8 @@ exports.getPdf = async (req, res, next) => {
         DataAtual: getDate(),
         creationDate,
         Subsystems: subInfo,
+        totalReqFunc,
+        totalReqNonFunc,
       },
       (err, html) => {
         if (err) {
@@ -155,7 +165,7 @@ exports.getPdf = async (req, res, next) => {
                   await res.sendFile(filePath)
                   setTimeout(() => {
                     fs.unlinkSync(filePath)
-                  }, 3000)
+                  }, 2000)
                 }
               },
             )
