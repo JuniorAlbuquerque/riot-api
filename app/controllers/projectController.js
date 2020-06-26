@@ -130,9 +130,7 @@ exports.getPdf = async (req, res, next) => {
       footer: {
         height: '5mm',
       },
-      base:
-        'https://riot-backend.herokuapp.com/public/' ||
-        'http://localhost:3000/public/',
+      base: 'https://riot-backend.herokuapp.com/public/',
       format: 'A4',
       orientation: 'portrait',
       quality: '75',
