@@ -1,26 +1,26 @@
-const knex = require('../database')
+const knex = require('../database');
 
 exports.createSub = async (req, res, next) => {
   try {
-    const { id_project, nome, descricao } = req.body
+    const { id_project, nome, descricao } = req.body;
 
     await knex('subsystem').insert({
       nome,
       descricao,
       id_project,
-    })
+    });
 
     return res.status(201).json({
       message: 'Subsistema cadastrado com sucesso',
-    })
+    });
   } catch (error) {
-    next()
+    next();
   }
-}
+};
 
 exports.getInfoSubById = async (req, res, next) => {
   try {
-    const { id_sub } = req.params
+    const { id_sub } = req.params;
 
     await knex('subsystem')
       .where('id_sub', id_sub)
@@ -35,11 +35,11 @@ exports.getInfoSubById = async (req, res, next) => {
                   sub,
                   reqFunc,
                   reqNonFunc,
-                })
-              })
-          })
-      })
+                });
+              });
+          });
+      });
   } catch (error) {
-    next()
+    next();
   }
-}
+};

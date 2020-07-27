@@ -1,12 +1,12 @@
-const knex = require('../database')
-const pdf = require('html-pdf')
-const fs = require('fs')
-const ejs = require('ejs')
-const path = require('path')
-const { getDate, formatDate } = require('../utils/date')
+const knex = require('../database');
+const pdf = require('html-pdf');
+const fs = require('fs');
+const ejs = require('ejs');
+const path = require('path');
+const { getDate, formatDate } = require('../utils/date');
 
 exports.getProjectById = async (req, res) => {
-  const { id_project } = req.params
+  const { id_project } = req.params;
   await knex('project')
     .where('id_project', id_project)
     .then((project) => {
@@ -15,13 +15,13 @@ exports.getProjectById = async (req, res) => {
           'projecthasmember',
           'member.id_member',
           '=',
-          'projecthasmember.id_member',
+          'projecthasmember.id_member'
         )
         .join(
           'project',
           'project.id_project',
           '=',
-          'projecthasmember.id_project',
+          'projecthasmember.id_project'
         )
         .select('member.id_member', 'member.email', 'member.nome')
         .where('project.id_project', id_project)
@@ -29,23 +29,23 @@ exports.getProjectById = async (req, res) => {
           knex('subsystem')
             .where('id_project', id_project)
             .then((sub) => {
-              res.json({ project, members, sub })
-            })
-        })
-    })
-}
+              res.json({ project, members, sub });
+            });
+        });
+    });
+};
 
 exports.getProjectByAdmin = async (req, res) => {
-  const { id_admin } = req.params
+  const { id_admin } = req.params;
 
-  const response = await knex('project').where('id_admin', id_admin)
+  const response = await knex('project').where('id_admin', id_admin);
 
-  res.json(response)
-}
+  res.json(response);
+};
 
 exports.createProject = async (req, res, next) => {
   try {
-    const { id_admin, nome, tipo, dominio, descricao } = req.body
+    const { id_admin, nome, tipo, dominio, descricao } = req.body;
 
     if (id_admin) {
       await knex('project').insert({
@@ -54,22 +54,22 @@ exports.createProject = async (req, res, next) => {
         dominio,
         nome,
         descricao,
-      })
+      });
 
       return res.status(201).json({
         message: 'Projeto cadastrado com sucesso',
-      })
+      });
     }
     return res.status(401).json({
       message: 'Não autorizado',
-    })
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 exports.getPdf = async (req, res, next) => {
-  const { id_project } = req.params
+  const { id_project } = req.params;
 
   try {
     const Project = await knex('project')
@@ -78,36 +78,36 @@ exports.getPdf = async (req, res, next) => {
       .select(
         knex.ref('project.nome').as('Projeto'),
         'project.descricao',
-        'project.created_at',
+        'project.created_at'
       )
       .select(knex.ref('administrator.nome').as('Responsável'))
-      .first()
+      .first();
 
     const creationDate = formatDate(
       Project.created_at.toLocaleDateString(),
-      'pt-br',
-    )
+      'pt-br'
+    );
 
-    const subs = await knex('subsystem').where('id_project', id_project)
+    const subs = await knex('subsystem').where('id_project', id_project);
 
-    let subInfo = []
-    let totalReqFunc = 0
-    let totalReqNonFunc = 0
+    let subInfo = [];
+    let totalReqFunc = 0;
+    let totalReqNonFunc = 0;
 
     for (var subsystem of subs) {
-      const subname = subsystem.nome
-      const descricaoSub = subsystem.descricao
+      const subname = subsystem.nome;
+      const descricaoSub = subsystem.descricao;
       const reqFunc = await knex('reqfunctional').where(
         'id_sub',
-        subsystem.id_sub,
-      )
+        subsystem.id_sub
+      );
       const reqNonFunc = await knex('reqnonfunctional').where(
         'id_sub',
-        subsystem.id_sub,
-      )
+        subsystem.id_sub
+      );
 
-      totalReqFunc = totalReqFunc + reqFunc.length
-      totalReqNonFunc = totalReqNonFunc + reqNonFunc.length
+      totalReqFunc = totalReqFunc + reqFunc.length;
+      totalReqNonFunc = totalReqNonFunc + reqNonFunc.length;
 
       subInfo = [
         ...subInfo,
@@ -119,7 +119,7 @@ exports.getPdf = async (req, res, next) => {
             reqNonFunc: [...reqNonFunc],
           },
         ],
-      ]
+      ];
     }
 
     const options = {
@@ -134,7 +134,7 @@ exports.getPdf = async (req, res, next) => {
       format: 'A4',
       orientation: 'portrait',
       quality: '75',
-    }
+    };
 
     ejs.renderFile(
       './template.ejs',
@@ -148,7 +148,7 @@ exports.getPdf = async (req, res, next) => {
       },
       (err, html) => {
         if (err) {
-          res.json({ message: 'Erro ejs' })
+          res.json({ message: 'Erro ejs' });
         } else {
           pdf
             .create(html, options)
@@ -156,23 +156,23 @@ exports.getPdf = async (req, res, next) => {
               `./app/temp/projeto_${id_project}.pdf`,
               async (err, resp) => {
                 if (err) {
-                  res.json({ message: 'erro pdf' })
+                  res.json({ message: 'erro pdf' });
                 } else {
                   const filePath = path.resolve(
                     __dirname,
-                    `../temp/projeto_${id_project}.pdf`,
-                  )
-                  await res.sendFile(filePath)
+                    `../temp/projeto_${id_project}.pdf`
+                  );
+                  await res.sendFile(filePath);
                   setTimeout(() => {
-                    fs.unlinkSync(filePath)
-                  }, 2000)
+                    fs.unlinkSync(filePath);
+                  }, 2000);
                 }
-              },
-            )
+              }
+            );
         }
-      },
-    )
+      }
+    );
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};

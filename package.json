@@ -20,6 +20,7 @@
     "html-pdf": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.1",
+    "nodemailer": "^6.4.10",
     "pg": "^8.2.1"
   },
   "devDependencies": {
