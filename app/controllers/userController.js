@@ -83,3 +83,75 @@ exports.login = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getProfile = async (req,res, next) => {
+  try {
+    const { id_user } = req.params;
+
+    const user = await knex('administrator').where('id_admin', id_user).first();
+
+    if (user.length < 1) {
+      const user = await knex('member').where('id_member', id_user).first();
+
+      if (user.length < 1) {
+        return res.status(401).send({
+          message: 'Usuário não encontrado',
+        });
+      } else {
+        return res.json(user)
+      }
+    } else {
+      return res.json(user)
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { id_user, nome, email, senha } = req.body;
+
+    const user = await knex('administrator').where('id_admin', id_user).first();
+
+    if (user.length < 1) {
+      const user = await knex('member').where('id_member', id_user).first();
+
+      if (user.length < 1) {
+        return res.status(401).send({
+          message: 'Usuário não encontrado',
+        });
+      } else {
+        await bcrypt.hash(senha, 10, async (errBcrypt, hash) => {
+          if (errBcrypt) {
+            return res.status(500).send({
+              error: 'senha admin',
+            });
+          }
+    
+          await knex('member')
+            .where('id_member', id_user)
+            .update({ email: email, nome: nome, senha: hash });
+    
+          res.json({ message: 'Atualizado com sucesso' });
+        });
+      }
+    } else {
+      await bcrypt.hash(senha, 10, async (errBcrypt, hash) => {
+        if (errBcrypt) {
+          return res.status(500).send({
+            error: 'senha member',
+          });
+        }
+  
+        await knex('administrator')
+          .where('id_admin', id_user)
+          .update({ email: email, nome: nome, senha: hash });
+  
+        res.json({ message: 'Atualizado com sucesso' });
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
