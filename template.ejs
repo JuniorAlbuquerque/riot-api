@@ -127,18 +127,36 @@
     table tbody tr:last-of-type {
       border-bottom: 2px solid #06234e;
     }
+
+    .header {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin: 20px auto;
+      border-bottom: 1px solid #c7c7c7;
+      text-align: center;
+    }
+
+    .header .logo-ufam {
+      position: absolute;
+      right: 10px;
+      float: right;
+      top: -25px;
+    }
+
   </style>
 </head>
 
 <body onload="renderChart('<%= totalReqFunc %>', '<%= totalReqNonFunc %>')">
   <div class="container">
     <div class="header" style="margin-bottom: 20px;">
-      <img style="width: 100px;" src="img/ufam.png" alt="">
-      <div class="ufam" style="position: absolute; top: 55px; left: 285px; text-align: center;">
+      <img style="width: 80px;" class="logo-ufam" src="img/ufam.png" alt="">
+      <div class="ufam" style="margin-bottom: 20px;">
         <span>RIoThing</span> <br>
-        <span>Universidade Federal do Amazonas</span>
+        <span style="margin-bottom: 20px;">Universidade Federal do Amazonas</span>
       </div>
-
     </div>
     <div class="container-header">
       <div class="project-title">
