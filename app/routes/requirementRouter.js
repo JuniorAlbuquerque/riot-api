@@ -9,4 +9,6 @@ requirementRouter.post(
   requirementController.createRequirement,
 )
 
+requirementRouter.delete('/delete', requirementController.deleteRequirement);
+
 module.exports = requirementRouter

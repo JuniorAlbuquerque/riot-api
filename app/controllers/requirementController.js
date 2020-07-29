@@ -59,3 +59,28 @@ exports.createRequirement = async (req, res, next) => {
     next();
   }
 };
+
+exports.deleteRequirement = async (req, res, next) => {
+  try {
+    const { id_req, type } = req.body;
+
+    if (type == 'functional') {
+      await knex('reqfunctional')
+      .where('id_reqfunctional', id_req)
+      .del()
+
+      return res.json({message: 'Deletado com sucesso'})
+    } 
+
+    if (type == 'nonfunctional') {
+      await knex('reqnonfunctional')
+      .where('id_req_non_functional', id_req)
+      .del()
+
+      return res.json({message: 'Deletado com sucesso'})
+    }
+    
+  } catch (error) {
+    next();
+  }
+}
