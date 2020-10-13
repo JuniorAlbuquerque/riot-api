@@ -8,4 +8,7 @@ projectRouter.get('/info/:id_project', projectController.getProjectById)
 projectRouter.post('/create', isLogged, projectController.createProject)
 projectRouter.get('/downloadpdf/:id_project', projectController.getPdf)
 
+projectRouter.delete('/deleteproject', projectController.deleteProject)
+
+
 module.exports = projectRouter
