@@ -43,3 +43,41 @@ exports.getInfoSubById = async (req, res, next) => {
     next();
   }
 };
+
+exports.deleteModule = async (req, res, next) => {
+  try {
+    const { id_module } = req.body;
+
+    const reqFunc = await knex('reqfunctional').where(
+      'id_sub',
+      id_module
+    )
+
+    const reqNonFunc = await knex('reqnonfunctional').where(
+      'id_sub',
+      id_module
+    );
+
+    if (reqFunc.length > 0) {
+      await knex('reqfunctional')
+      .where('id_sub', id_module)
+      .del()
+    }
+
+    if (reqNonFunc.length > 0) {
+      await knex('reqnonfunctional')
+      .where('id_sub', id_module)
+      .del()
+    }
+
+    await knex('subsystem')
+    .where('id_sub', id_module)
+    .del()
+
+    return res.json({message: "Módulo excluído com sucesso"});
+
+  } catch (error) {
+    next();
+  }
+
+}
