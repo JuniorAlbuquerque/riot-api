@@ -40,6 +40,14 @@ exports.getProjectByAdmin = async (req, res) => {
 
   const response = await knex('project').where('id_admin', id_admin);
 
+  if (response.length < 1) {
+    const response = await knex.select('*').from('project').
+    join('projecthasmember', {'projecthasmember.id_project': 'project.id_project'})
+    .where('projecthasmember.id_member', id_admin)
+
+    return res.json(response);
+  }
+
   res.json(response);
 };
 
@@ -175,4 +183,55 @@ exports.getPdf = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+exports.deleteProject = async (req, res) => {
+  const { id_project } = req.body;
+
+  const members = await knex('projecthasmember').where('id_project', id_project);
+  
+  if (members.length > 0) {
+    await knex('projecthasmember')
+    .where('id_project', id_project)
+    .del()
+  }
+  
+  const subs = await knex('subsystem').where('id_project', id_project);
+
+  if (subs.length > 0) {
+    for (var subsystem of subs) {
+      const reqFunc = await knex('reqfunctional').where(
+        'id_sub',
+        subsystem.id_sub
+      )
+
+      const reqNonFunc = await knex('reqnonfunctional').where(
+        'id_sub',
+        subsystem.id_sub
+      );
+
+      if (reqFunc.length > 0) {
+        await knex('reqfunctional')
+        .where('id_sub', subsystem.id_sub)
+        .del()
+      }
+
+      if (reqNonFunc.length > 0) {
+        await knex('reqnonfunctional')
+        .where('id_sub', subsystem.id_sub)
+        .del()
+      }
+    }
+
+    await knex('subsystem')
+    .where('id_project', id_project)
+    .del()
+  } 
+
+  await knex('project')
+    .where('id_project', id_project)
+    .del()
+
+  return res.json({message: "Projeto excluído com sucesso"});
+
 };
