@@ -88,20 +88,20 @@ exports.getProfile = async (req,res, next) => {
   try {
     const { id_user } = req.params;
 
-    const user = await knex('administrator').where('id_admin', id_user).first();
+    const user = await knex('administrator').where('id_admin', id_user);
 
     if (user.length < 1) {
-      const user = await knex('member').where('id_member', id_user).first();
+      const user = await knex('member').where('id_member', id_user);
 
       if (user.length < 1) {
         return res.status(401).send({
           message: 'Usuário não encontrado',
         });
       } else {
-        return res.json(user)
+        return res.json(user[0])
       }
     } else {
-      return res.json(user)
+      return res.json(user[0])
     }
   } catch (error) {
     next(error);
@@ -112,7 +112,7 @@ exports.updateUser = async (req, res, next) => {
   try {
     const { id_user, nome, email, senha } = req.body;
 
-    const user = await knex('administrator').where('id_admin', id_user).first();
+    const user = await knex('administrator').where('id_admin', id_user);
 
     if (user.length < 1) {
       const user = await knex('member').where('id_member', id_user).first();
