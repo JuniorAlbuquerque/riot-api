@@ -52,7 +52,7 @@ exports.associateMember = async (req, res, next) => {
           .where({ id_member: id_member, id_project: id_project })
           .then(async (response) => {
             if (response.length > 0) {
-              return res.json({ error: 'Membro já associado ao projeto' });
+              return res.json({ message: 'Membro já associado ao projeto' });
             } else {
               await knex('projecthasmember')
                 .insert({
