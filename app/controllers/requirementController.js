@@ -11,7 +11,7 @@ exports.createRequirement = async (req, res, next) => {
 
     if (tipo) {
       await knex("reqnonfunctional")
-        .where("id_sub", id_sub)
+        .where("id_sub", id_sub).orderBy('id_reqfunctional', 'asc')
         .then(async (reqNonFunc) => {
           if (reqNonFunc.length > 0) {
             const lastRNFIndicator = last(reqNonFunc).indicador;
@@ -35,7 +35,7 @@ exports.createRequirement = async (req, res, next) => {
     }
 
     await knex("reqfunctional")
-      .where("id_sub", id_sub)
+      .where("id_sub", id_sub).orderBy('id_req_non_functional', 'asc')
       .then(async (reqFunc) => {
         if (reqFunc.length > 0) {
           const lastRFIndicator = last(reqFunc).indicador;
