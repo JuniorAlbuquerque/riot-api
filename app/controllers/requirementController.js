@@ -84,3 +84,34 @@ exports.deleteRequirement = async (req, res, next) => {
     next();
   }
 }
+
+exports.updateRequirement = async (req, res, next) => {
+  try {
+    const { id_req, description, type } = req.body;
+
+    if (type) {
+      await knex('reqnonfunctional')
+      .where('id_req_non_functional', id_req)
+      .update({ descricao: description, tipo: type });
+
+      return res.json({ message: 'Atualizado com sucesso' });
+    }
+
+    const requirement = await knex('reqfunctional').where('id_reqfunctional', id_req);
+
+    if (requirement.length < 1) {
+      return res.status(401).send({
+        message: 'Requisito não cadastrado ou com erro de cadastro',
+      });
+    } else {
+      await knex('reqfunctional')
+          .where('id_reqfunctional', id_req)
+          .update({ descricao: description });
+  
+      return res.json({ message: 'Atualizado com sucesso' });
+    }
+
+  } catch (error) {
+    next(error);
+  }
+}

@@ -26,10 +26,10 @@ exports.getInfoSubById = async (req, res, next) => {
       .where('id_sub', id_sub)
       .then((sub) => {
         knex('reqfunctional')
-          .where('id_sub', id_sub)
+          .where('id_sub', id_sub).orderBy('id_reqfunctional', 'asc')
           .then((reqFunc) => {
             knex('reqnonfunctional')
-              .where('id_sub', id_sub)
+              .where('id_sub', id_sub).orderBy('id_req_non_functional', 'asc')
               .then((reqNonFunc) => {
                 res.json({
                   sub,

@@ -10,5 +10,6 @@ requirementRouter.post(
 )
 
 requirementRouter.delete('/delete', requirementController.deleteRequirement);
+requirementRouter.post('/update', requirementController.updateRequirement);
 
 module.exports = requirementRouter
